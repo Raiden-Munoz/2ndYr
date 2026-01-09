@@ -1,28 +1,44 @@
-#include  <stdio.h>
-#include <stdlib.h>
-#include  <unistd.h>
-#include <sys/wait.h>
+#include<stdio.h>
 
-void main(int argc, char *arg[])
+int main()
 {
-	int pid; 
-    pid = fork();
-		if (pid < 0)
-		{
-			printf("fork failed");
-			exit (1);
-		}
-		else if (pid == 0)
-		{
-      		execlp("whoami", "1s", NULL);
-      		exit(0);
-	    }
-	    else
-	    {
-		    printf("\n Process ID is:   %d \n", getpid());
-		    wait (NULL);
-		    exit (0);
-	    }
-        //Raiden Munoz 2CPE - 2B
-}
+    int bt[20], wt[20], tat[20], i, n;
+    float wtavg, tatavg;
 
+    printf("\nEnter the number of processes -- ");
+    scanf("%d", &n);
+
+    for(i = 0; i < n; i++)
+    {
+        printf("\nEnter Burst Time for Process %d -- ", i);
+        scanf("%d", &bt[i]);
+    }
+
+    wt[0] = wtavg = 0;
+    tat[0] = tatavg = bt[0];
+    //wt[0] = 0
+    //wtavg = 0
+    //tat[0] = bt[0]
+    //tatavg = bt[0]
+
+    for(i = 1; i < n; i++)
+    {
+        wt[i] = wt[i-1] + bt[i-1];
+        tat[i] = tat[i-1] + bt[i];
+        wtavg = wtavg + wt[i];
+        tatavg = tatavg + tat[i];
+    }
+
+    printf("\n\tPROCESS \tBURST TIME \tWAITING TIME \tTURNAROUND TIME");
+
+    for(i = 0; i < n; i++)
+    {
+        printf("\n\tP%d \t\t %d \t\t %d \t\t %d",
+               i, bt[i], wt[i], tat[i]);
+    }
+
+    printf("\n\nAverage Waiting Time -- %.2f", wtavg / n);
+    printf("\nAverage Turnaround Time -- %.2f", tatavg / n);
+
+    return 0;
+}
